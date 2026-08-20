@@ -1,1 +1,3 @@
 1380293b396e7bb4fe28656a5570ab272144bf71d79bfb8c2eb7129de43521df  fair-raps-researcher-toolkit_5_8_0-rc15.html
+3bc3d31600eaccfd37d5a11e171a9276ab0973f57e5608b8aff377b6778a0001  fair-raps-researcher-toolkit_5_9_0-dev9.html
+a4426144597d0b5a36cca7f05674347c3830cc499896f71432f0d552fefe0452  fair-raps-researcher-toolkit_5_9_0-dev9-public-hotfix1.html
