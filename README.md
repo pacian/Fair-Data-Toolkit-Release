@@ -4,23 +4,34 @@ Public release repository for the TU/e FAIR Data Clinic Toolkit standalone proof
 
 ## Release status
 
-The final locked standalone development baseline is **v5.9.0-dev9**.
+The final locked standalone development baseline is **v5.9.0-dev9**. The recommended public-facing standalone artifact is **v5.9.0-dev9-public-hotfix1**.
 
-Authoritative locked artifact:
+### Important distinction between the two DEV9 artifacts
+
+These two files have different purposes and should not be treated as interchangeable:
+
+- **`fair-raps-researcher-toolkit_5_9_0-dev9.html` — locked historical/final standalone baseline.** This is the immutable DEV9 artifact preserved byte-for-byte for provenance, reproducibility, and development history. It intentionally remains exactly as it was released, including the dated embedded TU/e departmental Data Steward directory identified in public review. It is **not** the recommended public-facing version.
+- **`fair-raps-researcher-toolkit_5_9_0-dev9-public-hotfix1.html` — recommended public-facing standalone artifact.** This is a separately versioned derivative of DEV9 created specifically to correct the embedded named-personnel directory. It removes that departmental personnel directory and replaces the corresponding directory-specific integrity tests with neutral equivalents while retaining the DEV9 assessment semantics, workflow behavior, and repository-preparation model.
+
+The hotfix does **not** replace or rewrite the locked DEV9 provenance artifact. Conversely, locked DEV9 should not be interpreted as the preferred public deployment artifact now that the corrected derivative exists.
+
+Neither file is the institution-neutral RORA Platform. The hotfix remains a TU/e FAIR Data Clinic standalone proof of concept; RORA is the successor architecture in which institution-specific configuration is separated from institution-neutral core behavior.
+
+## Locked DEV9 provenance artifact
+
+Artifact:
 
 `fair-raps-researcher-toolkit_5_9_0-dev9.html`
 
-Authoritative SHA-256:
+SHA-256:
 
 `3bc3d31600eaccfd37d5a11e171a9276ab0973f57e5608b8aff377b6778a0001`
 
-DEV9 remains byte-for-byte unchanged. It is preserved as the historical standalone baseline and as development provenance for the successor platform work.
+DEV9 remains byte-for-byte unchanged and is preserved as the historical standalone baseline and as development provenance for successor platform work.
 
-### Recommended public-facing standalone artifact
+## Recommended public-facing standalone artifact
 
-A public review identified that the locked standalone toolkit embeds a dated TU/e departmental Data Steward directory containing individual names and email addresses. Because DEV9 is immutable, that historical artifact has not been silently modified.
-
-The recommended public-facing standalone artifact is therefore the separately versioned correction:
+Artifact:
 
 `fair-raps-researcher-toolkit_5_9_0-dev9-public-hotfix1.html`
 
@@ -28,7 +39,7 @@ SHA-256:
 
 `a4426144597d0b5a36cca7f05674347c3830cc499896f71432f0d552fefe0452`
 
-This bounded correction removes the embedded named departmental Data Steward directory and replaces the corresponding directory-specific integrity tests with neutral equivalents. It retains the DEV9 assessment, workflow, and repository-preparation model. It is still a TU/e FAIR Data Clinic standalone proof of concept and should not be interpreted as the fully institution-neutral RORA architecture.
+This bounded correction addresses the hard-coded Data Steward personnel directory reported during public review. It does not change the underlying DEV9 assessment model, workflow model, or repository-preparation boundaries.
 
 ## Historical predecessor
 
