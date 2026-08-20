@@ -1,0 +1,122 @@
+name: Prepare DEV9 public hotfix
+
+on:
+  push:
+    branches:
+      - release/publish-dev9-and-correct-public-baseline
+    paths:
+      - fair-raps-researcher-toolkit_5_9_0-dev9.html
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out correction branch
+        uses: actions/checkout@v4
+        with:
+          ref: release/publish-dev9-and-correct-public-baseline
+          fetch-depth: 0
+
+      - name: Verify locked DEV9 and generate bounded public correction
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED="3bc3d31600eaccfd37d5a11e171a9276ab0973f57e5608b8aff377b6778a0001"
+          SOURCE="fair-raps-researcher-toolkit_5_9_0-dev9.html"
+          HOTFIX="fair-raps-researcher-toolkit_5_9_0-dev9-public-hotfix1.html"
+          ACTUAL="$(sha256sum "$SOURCE" | awk '{print $1}')"
+          test "$ACTUAL" = "$EXPECTED"
+
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          source_path = Path("fair-raps-researcher-toolkit_5_9_0-dev9.html")
+          output_path = Path("fair-raps-researcher-toolkit_5_9_0-dev9-public-hotfix1.html")
+          text = source_path.read_text(encoding="utf-8")
+
+          old_title = "<title>TU/e FAIR Data Clinic Toolkit v5.9.0-dev9</title>"
+          new_title = "<title>TU/e FAIR Data Clinic Toolkit v5.9.0-dev9-public-hotfix1</title>"
+          if text.count(old_title) != 1:
+              raise SystemExit("Unexpected DEV9 title occurrence count")
+          text = text.replace(old_title, new_title, 1)
+
+          old_version = "META.version='5.9.0-dev9';"
+          new_version = "META.version='5.9.0-dev9-public-hotfix1';"
+          if text.count(old_version) != 1:
+              raise SystemExit("Unexpected DEV9 META.version occurrence count")
+          text = text.replace(old_version, new_version, 1)
+
+          pattern = re.compile(r"const DS_BY_DEPARTMENT=\[.*?\];const DEPARTMENT_TYPES=", re.S)
+          text, count = pattern.subn("const DS_BY_DEPARTMENT=[];const DEPARTMENT_TYPES=", text, count=1)
+          if count != 1:
+              raise SystemExit("Expected exactly one embedded Data Steward directory")
+
+          prohibited = [
+              "Nami Sunami", "n.sunami@tue.nl",
+              "Neda Norouzi", "n.norouzi1@tue.nl",
+              "Gouri Patil", "g.patil@tue.nl",
+              "Angela Aleksovska", "a.aleksovska@tue.nl",
+              "Jonathan Gerona", "j.gerona@tue.nl",
+              "Jayakrishnan H. R. Nair", "h.r.nair@tue.nl",
+              "Davide Nardi", "d.nardi@tue.nl",
+              "Richard Dennis", "r.dennis@tue.nl",
+          ]
+          remaining = [value for value in prohibited if value in text]
+          if remaining:
+              raise SystemExit(f"Named personnel remain in corrected derivative: {remaining}")
+
+          output_path.write_text(text, encoding="utf-8", newline="\n")
+          PY
+
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          html = Path("fair-raps-researcher-toolkit_5_9_0-dev9-public-hotfix1.html").read_text(encoding="utf-8")
+          blocks = re.findall(r"<script>(.*?)</script>", html, flags=re.S | re.I)
+          if not blocks:
+              raise SystemExit("No executable script block found")
+          Path("/tmp/dev9-public-hotfix.js").write_text("\n".join(blocks), encoding="utf-8")
+          PY
+          node --check /tmp/dev9-public-hotfix.js
+
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+
+          files = [
+              "fair-raps-researcher-toolkit_5_8_0-rc15.html",
+              "fair-raps-researcher-toolkit_5_9_0-dev9.html",
+              "fair-raps-researcher-toolkit_5_9_0-dev9-public-hotfix1.html",
+          ]
+          lines = []
+          for name in files:
+              p = Path(name)
+              if not p.exists():
+                  raise SystemExit(f"Missing public artifact: {name}")
+              digest = hashlib.sha256(p.read_bytes()).hexdigest()
+              lines.append(f"{digest}  {name}")
+          Path("SHA256SUMS.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
+          PY
+
+          grep -F "3bc3d31600eaccfd37d5a11e171a9276ab0973f57e5608b8aff377b6778a0001  fair-raps-researcher-toolkit_5_9_0-dev9.html" SHA256SUMS.txt
+          sha256sum fair-raps-researcher-toolkit_5_9_0-dev9-public-hotfix1.html
+
+      - name: Commit generated correction and checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add fair-raps-researcher-toolkit_5_9_0-dev9.html \
+                  fair-raps-researcher-toolkit_5_9_0-dev9-public-hotfix1.html \
+                  SHA256SUMS.txt
+          if git diff --cached --quiet; then
+            echo "No generated changes to commit."
+            exit 0
+          fi
+          git commit -m "Publish locked DEV9 and bounded public personnel-directory hotfix"
+          git push origin HEAD:release/publish-dev9-and-correct-public-baseline
