@@ -14,15 +14,21 @@ Authoritative SHA-256:
 
 `3bc3d31600eaccfd37d5a11e171a9276ab0973f57e5608b8aff377b6778a0001`
 
-DEV9 must remain byte-for-byte unchanged. It is preserved as the historical standalone baseline and as development provenance for the successor platform work.
+DEV9 remains byte-for-byte unchanged. It is preserved as the historical standalone baseline and as development provenance for the successor platform work.
 
-### Public personnel-directory correction
+### Recommended public-facing standalone artifact
 
-A public review identified that the standalone toolkit embeds a dated TU/e departmental Data Steward directory containing individual names and email addresses. This behavior is also present in the locked DEV9 artifact.
+A public review identified that the locked standalone toolkit embeds a dated TU/e departmental Data Steward directory containing individual names and email addresses. Because DEV9 is immutable, that historical artifact has not been silently modified.
 
-Because DEV9 is immutable, the locked artifact will not be silently edited. A separately versioned public correction will remove the embedded named personnel directory while preserving DEV9 assessment semantics, workflow behavior, and repository-preparation boundaries. The corrected derivative will have its own filename and checksum and will be clearly distinguished from locked DEV9.
+The recommended public-facing standalone artifact is therefore the separately versioned correction:
 
-Until that corrected derivative is published and verified, the historical DEV9 artifact should be interpreted as a proof-of-concept baseline rather than an institution-neutral deployment package.
+`fair-raps-researcher-toolkit_5_9_0-dev9-public-hotfix1.html`
+
+SHA-256:
+
+`a4426144597d0b5a36cca7f05674347c3830cc499896f71432f0d552fefe0452`
+
+This bounded correction removes the embedded named departmental Data Steward directory and replaces the corresponding directory-specific integrity tests with neutral equivalents. It retains the DEV9 assessment, workflow, and repository-preparation model. It is still a TU/e FAIR Data Clinic standalone proof of concept and should not be interpreted as the fully institution-neutral RORA architecture.
 
 ## Historical predecessor
 
@@ -42,7 +48,7 @@ It does not calculate or certify a FAIR score, does not provide institutional ap
 
 The application is self-contained. Download the selected HTML artifact and open it in a modern browser.
 
-SHA-256 checksums are maintained in `SHA256SUMS.txt`.
+SHA-256 checksums for all public HTML artifacts are maintained in `SHA256SUMS.txt`.
 
 ## Successor development
 
