@@ -6,6 +6,8 @@ on:
       - release/publish-dev9-and-correct-public-baseline
     paths:
       - fair-raps-researcher-toolkit_5_9_0-dev9.html
+      - .github/workflows/prepare-dev9-public-hotfix.yml
+  workflow_dispatch:
 
 permissions:
   contents: write
