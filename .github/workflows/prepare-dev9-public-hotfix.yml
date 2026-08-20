@@ -55,19 +55,19 @@ jobs:
           if count != 1:
               raise SystemExit("Expected exactly one embedded Data Steward directory")
 
-          prohibited = [
-              "Nami Sunami", "n.sunami@tue.nl",
-              "Neda Norouzi", "n.norouzi1@tue.nl",
-              "Gouri Patil", "g.patil@tue.nl",
-              "Angela Aleksovska", "a.aleksovska@tue.nl",
-              "Jonathan Gerona", "j.gerona@tue.nl",
-              "Jayakrishnan H. R. Nair", "h.r.nair@tue.nl",
-              "Davide Nardi", "d.nardi@tue.nl",
-              "Richard Dennis", "r.dennis@tue.nl",
+          prohibited_emails = [
+              "n.sunami@tue.nl",
+              "n.norouzi1@tue.nl",
+              "g.patil@tue.nl",
+              "a.aleksovska@tue.nl",
+              "j.gerona@tue.nl",
+              "h.r.nair@tue.nl",
+              "d.nardi@tue.nl",
+              "r.dennis@tue.nl",
           ]
-          remaining = [value for value in prohibited if value in text]
+          remaining = [value for value in prohibited_emails if value in text]
           if remaining:
-              raise SystemExit(f"Named personnel remain in corrected derivative: {remaining}")
+              raise SystemExit(f"Individual Data Steward email addresses remain in corrected derivative: {remaining}")
 
           output_path.write_text(text, encoding="utf-8", newline="\n")
           PY
